@@ -6,7 +6,7 @@ import numpy as np
 from scipy.signal import correlate2d
 
 # load input file into numpy array
-im = Image.open("bigdata.tif")
+im = Image.open("data.tif")
 imarray = np.array(im) / 2.
 im = Image.fromarray(imarray)
 im.convert('L').save("out/1_input.png")
