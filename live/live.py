@@ -8,7 +8,7 @@ def save(arr, path):
     newarr = 0.+arr
     newarr -= min(map(min, arr))
     newarr *= 255. / (max(map(max, arr)))
-    Image.fromarray(newarr).convert('L').save(path)
+    Image.fromarray(arr).convert('L').save(path)
 
 
 # load input file into numpy array
@@ -36,5 +36,6 @@ targft = np.fft.ifftshift(targft)
 # divide target/origin
 maskft = targft / origft
 maskft = np.fft.fftshift(maskft)
-save(np.log(np.abs(maskft)), "out/5_mask_ft.png")
+save(np.abs(maskft)*100, "out/5_mask_ft.png")
+save(np.log(np.abs(maskft))*100, "out/5_mask_ftlog.png")
 maskft = np.fft.ifftshift(maskft)
