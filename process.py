@@ -1,7 +1,5 @@
 from __future__ import print_function
 from PIL import Image
-import PIL.ImageOps
-import PIL.ImageEnhance
 import numpy as np
 from scipy.signal import correlate2d
 
@@ -44,8 +42,8 @@ corr = 0
 for angle in np.linspace(0, 360, 100):
     print("{:5.1f} %".format(angle / 3.6))
     shape = Image.open("houses/L11.png").rotate(angle).convert('L')
-    # scale = 1
-    # shape = shape.resize((int(shape.size[0]*scale), int(shape.size[1]*scale)))
+    # zoom = 1
+    # shape = shape.resize((int(shape.size[0]*zoom), int(shape.size[1]*zoom)))
     shape = np.array(shape)
     _corr = correlate2d(inv, shape, mode="same")
     corr = np.maximum(corr, _corr)

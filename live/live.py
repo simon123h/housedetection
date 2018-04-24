@@ -1,16 +1,40 @@
+from __future__ import print_function
+from PIL import Image
 import numpy as np
-import cv2
-from matplotlib import pyplot as plt
 
-img = cv2.imread('fourier.png', 0)
 
-dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
-dft_shift = np.fft.fftshift(dft)
+def save(arr, path):
+    # save an image
+    newarr = 0.+arr
+    newarr -= min(map(min, arr))
+    newarr *= 255. / (max(map(max, arr)))
+    Image.fromarray(newarr).convert('L').save(path)
 
-magnitude_spectrum = cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1])
 
-plt.subplot(121), plt.imshow(img, cmap='gray')
-plt.title('Input Image'), plt.xticks([]), plt.yticks([])
-plt.subplot(122), plt.imshow(magnitude_spectrum, cmap='gray')
-plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
-plt.show()
+# load input file into numpy array
+orig = Image.open("original.png")
+orig = np.array(orig)
+save(orig, "out/1_input.png")
+
+# load target file into numpy array
+targ = Image.open("target.png")
+targ = np.array(targ)
+save(targ, "out/2_target.png")
+
+# FFT original
+origft = np.fft.fft2(orig)
+origft = np.fft.fftshift(origft)
+save(np.log(np.abs(origft)), "out/3_original_ft.png")
+origft = np.fft.ifftshift(origft)
+
+# FFT target
+targft = np.fft.fft2(targ)
+targft = np.fft.fftshift(targft)
+save(np.log(np.abs(targft)), "out/4_target_ft.png")
+targft = np.fft.ifftshift(targft)
+
+# divide target/origin
+maskft = targft / origft
+maskft = np.fft.fftshift(maskft)
+save(np.log(np.abs(maskft)), "out/5_mask_ft.png")
+maskft = np.fft.ifftshift(maskft)
